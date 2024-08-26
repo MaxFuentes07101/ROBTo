@@ -3,13 +3,9 @@ import speech_recognition as sr
 import pyttsx3
 import random
 
-# Initialize the text-to-speech engine
+
 engine = pyttsx3.init()
-
-# Set your OpenAI API key
 openai.api_key = 'SHHHH'
-
-# Define some personality traits and possible responses
 personality_responses = {
     "greeting": ["Hey there! What's up?", "Hello! How's it going?", "Hi! What’s on your mind?"],
     "fallback": ["Hmm, that's interesting. Tell me more.", "I’m not sure I get it, but let’s roll with it!", "Oh really? Go on..."],
@@ -42,7 +38,7 @@ def listen():
 def chat_with_ai(prompt):
     """Send the user's prompt to the AI model and return the response."""
     response = openai.Completion.create(
-        engine="text-davinci-003",  # You can adjust the model here
+        engine="text-davinci-003",  # try 4o Model
         prompt=f"You're a friendly and personable character named Osmo. Engage in a natural conversation with the user. {prompt}",
         max_tokens=150,
         temperature=0.8,  # Higher temperature for more creative responses
@@ -56,22 +52,23 @@ def get_random_response(response_type):
 
 def main():
     while True:
-        # Listen for the activation keyword "Osmo"
+        # Listen for activatio "Osmo"
         user_input = listen()
         if user_input and "osmo" in user_input.lower():
             speak(get_random_response("greeting"))
 
-            # Listen for the actual command after "Osmo" is called
+            # Listen for the actual command 
             user_input = listen()
             if user_input:
                 if "bye" in user_input.lower() or "goodbye" in user_input.lower():
                     speak(get_random_response("goodbye"))
-                    break  # Exit the loop if the user says goodbye
+                    break  # Break when "Goodbye" is said
 
                 ai_response = chat_with_ai(user_input)
                 
                 if not ai_response.strip():
                     # If the AI response is empty or doesn't make sense, use a fallback response
+                    # Part of documentation still need to dive into it
                     ai_response = get_random_response("fallback")
                 
                 print(f"Osmo: {ai_response}")
